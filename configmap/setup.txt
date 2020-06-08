@@ -1,0 +1,5 @@
+oc project XXX
+# create or copy a config file.   e.g. nginx.conf
+oc create configmap frontend-nginx --from-file=nginx.conf
+oc set volume dc/crm-frontend-app -t configmap --configmap-name=frontend-nginx --add --mount-path=/etc/nginx/nginx.conf
+ 
