@@ -3,3 +3,11 @@ oc project XXX
 oc create configmap frontend-nginx --from-file=nginx.conf
 oc set volume dc/crm-frontend-app -t configmap --configmap-name=frontend-nginx --add --mount-path=/etc/nginx/nginx.conf
  
+## add subPath: nginx.conf in deploymentconfig
+oc edit  dc/crm-frontend-app
+...
+          volumeMounts:
+            - name: volume-hkck4
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+...
