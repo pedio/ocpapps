@@ -1,3 +1,6 @@
+# persistent volume for app-storage
+
+cat <<EOF > app-storage-pv.yaml
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -8,10 +11,28 @@ spec:
   claimRef:
     kind: PersistentVolumeClaim
     name: app-storage
-    namespace: 3scale
+    namespace: demo
   accessModes:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain
   nfs:
     path: /exports/gogs-data
     server: nfsserver
+EOF
+
+
+cat <<EOF > app-storage.yaml
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: app-storage
+  namespace: demo
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  volumeMode: Filesystem
+  volumeName: app-storage-pv
+EOF
