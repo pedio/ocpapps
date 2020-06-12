@@ -1,13 +1,17 @@
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: gogs-data
+  name: app-storage-pv
 spec:
   capacity:
     storage: 1Gi
+  claimRef:
+    kind: PersistentVolumeClaim
+    name: app-storage
+    namespace: 3scale
   accessModes:
-    - ReadWriteOnce
+    - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain
   nfs:
     path: /exports/gogs-data
-    server: 192.168.122.2
+    server: nfsserver
