@@ -1,0 +1,42 @@
+cat <<EOF > /etc/nginx/conf.d/apireverse.conf 
+
+fastcgi_buffers 8 16k;
+fastcgi_buffer_size 32k;
+
+client_max_body_size 24M;
+client_body_buffer_size 128k;
+
+client_header_buffer_size 5120k;
+large_client_header_buffers 16 5120k;
+
+#proxy_cache_path /var/cache/nginx levels=1:2 keys_zone=cache0:10M max_size=100G use_temp_path=off;
+
+server {
+    listen              80;
+    server_name         api.cheers.local;
+    #access_log  "/var/log/nginx/access.log interval=1d baknum=7 maxsize=1G"  main;
+    access_log  /var/log/nginx/access.log;
+
+    location / {
+        #root /path/to/myapp/public;
+        proxy_set_header X-Forwarded-Host $host:$server_port;
+        proxy_set_header X-Forwarded-Server $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://openjdk-app-demo.apps.ocpuat.cheers.local;
+    }
+
+    location ^~/user/ {
+        proxy_set_header X-Forwarded-Host $host:$server_port;
+        proxy_set_header X-Forwarded-Server $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+        #rewrite ^(.*)$ "://$http_host$uri$is_args$args" break;
+        #rewrite ^(.*)$ "http$uri$is_args$args" break;
+        #rewrite ^/user/(.*)$ /$1 break;
+        #rewrite ^/user/(.*)$ /$request_uri? break;
+        #rewrite ^(.+)$ /$request_uri? permanent;
+        proxy_pass http://user.apps.ocpuat.cheers.local;
+
+    }
+}
+EOF
