@@ -1,4 +1,4 @@
-cat <<EOF > /etc/nginx/conf.d/apireverse.conf 
+vi /etc/nginx/conf.d/apireverse.conf 
 
 fastcgi_buffers 8 16k;
 fastcgi_buffer_size 32k;
@@ -39,4 +39,4 @@ server {
 
     }
 }
-EOF
+
